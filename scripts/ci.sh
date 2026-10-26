@@ -9,7 +9,7 @@ mkdir -p .work
 M=.venv/bin/mojo
 build() { # name source [mojo flags...]
   local out=".work/$1" src=$2; shift 2
-  $M build -I src "$@" "$src" -o "$out" 2>.work/build.err || { echo "FAIL build: $src $*"; cat .work/build.err; exit 1; }
+  $M build --target-accelerator amdgpu:gfx1100 -I src "$@" "$src" -o "$out" 2>.work/build.err || { echo "FAIL build: $src $*"; cat .work/build.err; exit 1; }
 }
 build run_vattn tests/run_vattn.mojo
 build run_vattn_128_64 tests/run_vattn.mojo -D VATTN_BM=128 -D VATTN_BN=64
