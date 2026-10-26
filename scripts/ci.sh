@@ -14,5 +14,9 @@ build() { # name source [mojo flags...]
 build run_vattn tests/run_vattn.mojo
 build run_vattn_128_64 tests/run_vattn.mojo -D VATTN_BM=128 -D VATTN_BN=64
 build quickstart examples/quickstart.mojo
-.work/quickstart || { echo "FAIL example: examples/quickstart.mojo"; exit 1; }
-echo "PASS ci"
+if [ -e /dev/kfd ]; then  # the example launches the kernel: only where an AMD GPU is present
+  .work/quickstart || { echo "FAIL example: examples/quickstart.mojo"; exit 1; }
+  echo "PASS ci"
+else
+  echo "PASS ci (build only: no GPU here, examples/quickstart and scripts/gpu-gates.sh not run)"
+fi

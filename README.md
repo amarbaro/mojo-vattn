@@ -27,7 +27,7 @@ Requires Mojo through the `max` 26.6.0 wheel (`uv sync`). Building needs no GPU;
 | Vendor | copy `src/vattn.mojo` into your project |
 
 `scripts/ci.sh` builds the harness (default tiles and a BM 128 / BN 64 variant) and the example.
-It is the CPU check and runs on GitHub. The example prints `SKIP` when no GPU is present.
+It is the CPU check and runs on GitHub: without a GPU it builds everything and does not run the example.
 
 ## What you get
 
