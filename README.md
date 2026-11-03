@@ -1,5 +1,9 @@
 # mojo-vattn
 
+<!-- badges -->
+[![ci](https://github.com/amarbaro/mojo-vattn/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amarbaro/mojo-vattn/actions/workflows/ci.yml) [![latest release](https://img.shields.io/github/v/release/amarbaro/mojo-vattn)](https://github.com/amarbaro/mojo-vattn/releases/latest) [![license](https://img.shields.io/github/license/amarbaro/mojo-vattn)](https://github.com/amarbaro/mojo-vattn/blob/main/LICENSE)
+<!-- /badges -->
+
 A flash-attention forward kernel in Mojo for the self-attention of video diffusion transformers
 (Wan 2.2), written for the AMD RX 7900 XTX (gfx1100, RDNA3 WMMA). Non-causal, no mask, f16 in and
 out, f32 accumulate, head dimension 128, layout `[L, H, D]`. It is a kernel and a parity harness,
