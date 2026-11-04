@@ -16,7 +16,7 @@ GPU kernel, launched with `ctx.enqueue_function[vattn_fwd]`.
 | `O` | f16 output, same layout |
 | `seq` | sequence length L, any positive value |
 | `heads` | H |
-| `scale_log2` | `log2(e) / sqrt(128)`, folded into Q |
+| `scale_log2` | `log2(e) / sqrt(128)`, applied to the f32 scores |
 
 Launch: `grid_dim=(ceildiv(L, BM), H)`, `block_dim=THREADS`. Softmax is non-causal, no mask,
 f32 accumulate; output is `softmax(Q K^T / sqrt(128)) V`.
