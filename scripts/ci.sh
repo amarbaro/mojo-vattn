@@ -14,6 +14,11 @@ build() { # name source [mojo flags...]
 build run_vattn tests/run_vattn.mojo
 build run_vattn_128_64 tests/run_vattn.mojo -D VATTN_BM=128 -D VATTN_BN=64
 build quickstart examples/quickstart.mojo
+# negative control: a tile config the loaders cannot cover must fail at compile time, not corrupt output
+if $M build --target-accelerator amdgpu:gfx1100 -I src -D VATTN_BM=96 tests/run_vattn.mojo -o .work/run_vattn_96 2>.work/build.err; then
+  echo "FAIL assert: -D VATTN_BM=96 built (loaders would cover 384 of 512 vectors)"; exit 1
+fi
+grep -q "multiples of 16" .work/build.err || { echo "FAIL assert: VATTN_BM=96 failed for another reason"; cat .work/build.err; exit 1; }
 if [ -e /dev/kfd ]; then  # the example launches the kernel: only where an AMD GPU is present
   .work/quickstart || { echo "FAIL example: examples/quickstart.mojo"; exit 1; }
   echo "PASS ci"

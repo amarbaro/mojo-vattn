@@ -30,6 +30,7 @@ def vattn_fwd(
     heads: Int32,
     scale_log2: Float32,
 ):
+    comptime assert (BN * D // 8) % THREADS == 0 and BM % 16 == 0 and BN % 16 == 0, "VATTN_BM/BN: multiples of 16, and BN*D/8 a multiple of THREADS"
     var L = Int(seq)
     var H = Int(heads)
     var head = Int(block_idx.y)
