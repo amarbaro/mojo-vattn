@@ -28,7 +28,7 @@ Requires Mojo through the `max` 26.7.0 wheel (`uv sync`). Building needs no GPU;
 | Way | Command |
 |---|---|
 | Source path | `mojo build -I path/to/mojo-vattn/src app.mojo` |
-| Vendor | copy `src/vattn.mojo` into your project |
+| Vendor | copy `src/vattn/` into your project |
 
 `scripts/ci.sh` builds the harness (default tiles and a BM 128 / BN 64 variant) and the example.
 It is the CPU check and runs on GitHub: without a GPU it builds everything and does not run the example.
@@ -44,7 +44,7 @@ It is the CPU check and runs on GitHub: without a GPU it builds everything and d
   `o_mojo.bin`, and times `ITERS` launches.
 - `tools/vattn-ref.py`: fp64 reference over the same f16 bytes (`gen`, `check`).
 
-The API is in [docs/api.md](docs/api.md). The design and the stage plan are in
+The API is in [docs/api.md](docs/api.md). The design is in [docs/design.md](docs/design.md); the stage plan is in
 [docs/plan.md](docs/plan.md).
 
 ## Performance

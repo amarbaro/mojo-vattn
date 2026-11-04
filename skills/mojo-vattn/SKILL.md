@@ -9,7 +9,7 @@ One Mojo WMMA flash-attention forward kernel for gfx1100 with an fp64 parity har
 
 ## Install
 
-`uv sync`, then `mojo build -I <repo>/src app.mojo`, or copy `src/vattn.mojo`.
+`uv sync`, then `mojo build -I <repo>/src app.mojo`, or copy `src/vattn/`.
 
 ## Use
 
