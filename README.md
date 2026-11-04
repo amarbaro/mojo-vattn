@@ -23,7 +23,7 @@ ctx.enqueue_function[vattn_fwd](
 
 ## Install
 
-Requires Mojo through the `max` 26.6.0 wheel (`uv sync`). Building needs no GPU; running does.
+Requires Mojo through the `max` 26.7.0 wheel (`uv sync`). Building needs no GPU; running does.
 
 | Way | Command |
 |---|---|
