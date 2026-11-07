@@ -19,7 +19,7 @@ fly-connectome story videos), at unchanged quality.
 
 ## What exists (reuse, do not rewrite)
 
-- `~/Projects/mojo/mojo-baro/kernels/attn.mojo` `amar_attn_prefill_wmma` (~L510-660): Mojo WMMA prefill
+- `$HOME/Projects/mojo/mojo-baro/kernels/attn.mojo` `amar_attn_prefill_wmma` (~L510-660): Mojo WMMA prefill
   flash attention. S^T = K.Q^T with 2 accumulator chains, lane-owns-query softmax (xor-16 shuffle),
   P^T rebuilt in registers (no LDS round trip), V^T in LDS, f16 in / f32 acc. Causal, HD=256,
   paged KV, 16-key tiles, 28 spills. This is the template.
@@ -27,7 +27,7 @@ fly-connectome story videos), at unchanged quality.
   vector loads, `rocdl.flat_work_group_size` metadata for the 256-VGPR cap. This is the K/V tile loader.
 - `docs/BASELINE.md` L307-330: gfx1100 WMMA fragment lane layout (use `mma()` directly; `TensorCore.load_a` fails on RDNA).
 - `kernels/wmma_peak.mojo` + `bench/wmma-peak.sh`: roof 125.4 TFLOPS.
-- Tools: `tools/isa-receipt.py` (VGPR/LDS/spills), `~/iTools/bin/isa-loops`, `~/iTools/bin/rocprof-kernels`,
+- Tools: `tools/isa-receipt.py` (VGPR/LDS/spills), `$HOME/iTools/bin/isa-loops`, `$HOME/iTools/bin/rocprof-kernels`,
   `bench/build-variant.sh` (comptime knob sweeps), `bench/PROTOCOL-RULES.md` (prereg, arm read-back).
 - ComfyUI hook: `ModelPatcher.set_model_optimized_attention` / `transformer_options["optimized_attention_override"]`
   (`comfy/model_patcher.py:688`, `comfy/ldm/modules/attention.py:171-204` `wrap_attn`); precedent
@@ -43,7 +43,7 @@ Skills that govern the work: `inference-kernels`, `kernel-parity`, `kernel-arm-r
 
 ## Design
 
-### Kernel `vattn_fwd` (Mojo 1.0, new repo `~/Projects/mojo/mojo-vattn`, `-I` mojo-baro `kernels/`)
+### Kernel `vattn_fwd` (Mojo 1.0, new repo `$HOME/Projects/mojo/mojo-vattn`, `-I` mojo-baro `kernels/`)
 
 ```
 grid  = (ceil(L / BM), H)     head-major order: all q-blocks of one head resident together,
@@ -71,7 +71,7 @@ Every instantiation gets an `isa-receipt` (VGPR, scratch, LDS) BEFORE timing; sp
 ### Python bridge (decided by stage S0)
 
 Route A: `max.experimental.torch.CustomOpLibrary` (needs `max` wheel for the ComfyUI venv's Python 3.13).
-Route B: `mojo build --emit shared-lib` + `PythonModuleBuilder` (pattern: `~/iTools/llm/gguf-sweep/`),
+Route B: `mojo build --emit shared-lib` + `PythonModuleBuilder` (pattern: `$HOME/iTools/llm/gguf-sweep/`),
 taking `data_ptr()` ints + torch's current HIP stream; if Mojo cannot adopt torch's stream,
 `torch.cuda.current_stream().synchronize()` around the call (80 calls per step: overhead budget < 1 ms each).
 Custom node `ComfyUI/custom_nodes/mojo_vattn/`: installs the override on the Wan model only; gate
@@ -102,10 +102,10 @@ S3 sweeps on subsets first, `gpu-wait stats --days 1` in lane reports.
 
 ## Files
 
-- New: `~/Projects/mojo/mojo-vattn/` (`vattn.mojo`, `test_vattn.mojo`, `bench/`, `tools/vattn-ref.py`, `docs/`, README)
-- New: `~/Projects/imports/ComfyUI/custom_nodes/mojo_vattn/` (override node + bridge loader)
+- New: `$HOME/Projects/mojo/mojo-vattn/` (`vattn.mojo`, `test_vattn.mojo`, `bench/`, `tools/vattn-ref.py`, `docs/`, README)
+- New: `$HOME/Projects/imports/ComfyUI/custom_nodes/mojo_vattn/` (override node + bridge loader)
 - Reused read-only: mojo-baro `kernels/attn.mojo`, `kernels/matmul_wmma_pipe.mojo`, `docs/BASELINE.md`, `tools/isa-receipt.py`
-- Brain: `~/Brain/mojo-vattn/` (whiteboard, prereg results), ledger entries for misses
+- Brain: `$HOME/Brain/mojo-vattn/` (whiteboard, prereg results), ledger entries for misses
 
 ## Verification (end to end)
 
