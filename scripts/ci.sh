@@ -6,9 +6,13 @@ cd "$(dirname "$0")/.."
 v=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml); c=$(sed -n 's/^- \[v\([0-9.]*\)\].*/\1/p' CHANGELOG.md | head -1)
 [ "$v" = "$c" ] || { echo "FAIL version: pyproject $v vs newest CHANGELOG entry $c"; exit 1; }
 command -v uv >/dev/null || { echo "FAIL setup: uv not installed"; exit 1; }
-uv sync || { echo "FAIL setup: uv sync"; exit 1; }
+if [ -z "${MOJO:-}" ]; then
+  uv sync || { echo "FAIL setup: uv sync"; exit 1; }
+  MOJO=.venv/bin/mojo
+fi
+export MOJO
 mkdir -p .work
-M=.venv/bin/mojo
+M=$MOJO
 build() { # name source [mojo flags...]
   local out=".work/$1" src=$2; shift 2
   $M build --target-accelerator amdgpu:gfx1100 -I src "$@" "$src" -o "$out" 2>.work/build.err || { echo "FAIL build: $src $*"; cat .work/build.err; exit 1; }
