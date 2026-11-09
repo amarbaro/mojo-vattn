@@ -10,15 +10,38 @@ out, f32 accumulate, head dimension 128, layout `[L, H, D]`. It is a kernel and 
 not a drop-in attention backend: it is not wired into any framework, and it is not faster than
 PyTorch's SDPA.
 
-```mojo
-from vattn import vattn_fwd, BM, THREADS
+Install: `pixi workspace channel add https://conda.modular.com/max https://prefix.dev/amarbaro/amarbaro`, then `pixi add mojo-vattn` (import `vattn`). From source: `git clone https://github.com/amarbaro/mojo-vattn`, then `mojo run -I mojo-vattn/src app.mojo`.
+Toolchains: Mojo 1.2 stable, and the nightly 1.3.0.dev2026110805 in the weekly [mojo-libs](https://github.com/amarbaro/mojo-libs) matrix (36 libraries on stable, 35 on nightly).
 
-# q, k, v, o: device buffers of f16, L * H * D elements each
-ctx.enqueue_function[vattn_fwd](
-    q.unsafe_ptr(), k.unsafe_ptr(), v.unsafe_ptr(), o.unsafe_ptr(),
-    Int32(L), Int32(H), scale_log2,          # scale_log2 = log2(e) / sqrt(128)
-    grid_dim=(ceildiv(L, BM), H), block_dim=THREADS,
-)
+```mojo
+from max.gpu.host import DeviceContext
+from std.math import ceildiv, sqrt
+from std.sys import has_accelerator
+from vattn import vattn_fwd, f16, BM, THREADS, D
+
+
+def main() raises:
+    comptime L = 64
+    comptime H = 1
+    comptime N = L * H * D
+    comptime if not has_accelerator():
+        print("SKIP quickstart: no GPU, kernel compiled only")
+        return
+    var ctx = DeviceContext()
+    var q = ctx.enqueue_create_buffer[f16](N)
+    var k = ctx.enqueue_create_buffer[f16](N)
+    var v = ctx.enqueue_create_buffer[f16](N)
+    var o = ctx.enqueue_create_buffer[f16](N)
+    q.enqueue_fill(0)
+    k.enqueue_fill(0)
+    v.enqueue_fill(1)
+    var scale_log2 = Float32(1.4426950408889634) / sqrt(Float32(D))
+    ctx.enqueue_function[vattn_fwd](
+        q.unsafe_ptr(), k.unsafe_ptr(), v.unsafe_ptr(), o.unsafe_ptr(), Int32(L), Int32(H), scale_log2,
+        grid_dim=(ceildiv(L, BM), H), block_dim=THREADS,
+    )
+    with o.map_to_host() as h:
+        print("o[0] =", h[0], "(uniform attention over V = 1, expect 1)")
 ```
 
 ## Install
