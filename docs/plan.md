@@ -103,7 +103,7 @@ S3 sweeps on subsets first, `gpu-wait stats --days 1` in lane reports.
 ## Files
 
 - New: `$HOME/Projects/mojo/mojo-vattn/` (`vattn.mojo`, `test_vattn.mojo`, `bench/`, `tools/vattn-ref.py`, `docs/`, README)
-- New: `$HOME/Projects/imports/ComfyUI/custom_nodes/mojo_vattn/` (override node + bridge loader)
+- New: `$HOME/Projects/imports/ComfyUI-v0.43.0/custom_nodes/mojo_vattn/` (override node + bridge loader)
 - Reused read-only: mojo-baro `kernels/attn.mojo`, `kernels/matmul_wmma_pipe.mojo`, `docs/BASELINE.md`, `tools/isa-receipt.py`
 - Brain: `$HOME/Brain/mojo-vattn/` (whiteboard, prereg results), ledger entries for misses
 

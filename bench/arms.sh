@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REPS=$1; ITERS=$2; shift 2
-PY=$HOME/Projects/imports/ComfyUI/.venv/bin/python
+PY=$HOME/Projects/imports/ComfyUI-v0.43.0/.venv/bin/python
 real=.work/real
 read -r L H < <(python3 -c "import json;m=json.load(open('$real/meta.json'));print(m['L'],m['H'])")
 for b in "$@"; do
