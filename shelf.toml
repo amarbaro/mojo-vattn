@@ -1,0 +1,4 @@
+name = "mojo-vattn"
+version = "0.1.4"
+description = "Flash-attention forward for video DiT self-attention in Mojo, gfx1100"
+tags = ["mojo", "gpu", "attention", "kernel"]
